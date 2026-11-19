@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+:root {
+  --bg-main: #050509;
+  --bg-secondary: #090A16;
+  --bg-sidebar: #080913;
+  --bg-card: #10111D;
+  --bg-elevated: #151626;
+  --accent-primary: #A855F7;
+  --accent-secondary: #D946EF;
+  --glow-violet: #7C3AED;
+  --glow-magenta: #EC4899;
+  --text-primary: #F8FAFC;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+  --status-success: #10B981;
+  --status-warning: #F59E0B;
+  --status-critical: #EF4444;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(168, 85, 247, 0.35);
+}
+
+html,
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+.font-mono-num {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ambient FinTech Backdrop */
+.ambient-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 65% 45% at 15% -5%, rgba(124, 58, 237, 0.14), transparent 70%),
+    radial-gradient(ellipse 55% 40% at 88% 10%, rgba(217, 70, 239, 0.10), transparent 65%),
+    radial-gradient(ellipse 50% 45% at 50% 100%, rgba(168, 85, 247, 0.07), transparent 70%);
+}
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.025;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.6) 0.5px, transparent 0.5px);
+  background-size: 16px 16px;
+}
+
+/* Glassmorphism & Premium Cards */
+.fs-card {
+  background: rgba(16, 17, 29, 0.84);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fs-card-hover:hover {
+  border-color: rgba(168, 85, 247, 0.28);
+  box-shadow: 0 8px 30px -12px rgba(124, 58, 237, 0.22);
+}
+
+.fs-elevated {
+  background: rgba(21, 22, 38, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #F8FAFC 0%, #E9D5FF 45%, #D946EF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-accent-bar {
+  background: linear-gradient(90deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(9, 10, 22, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.22);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.45);
+}
+
+/* Micro-animations */
+@keyframes rowEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    background-color: rgba(168, 85, 247, 0.12);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    background-color: transparent;
+  }
+}
+
+.animate-row-enter {
+  animation: rowEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-in {
+  animation: fadeInSlide 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background-color: currentColor;
+  animation: pulseRing 1.8s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(168,85,247,0.09) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* Custom Range Slider */
+input[type="range"].fs-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+input[type="range"].fs-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #A855F7, #EC4899);
+  border: 2px solid #F8FAFC;
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.65);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+input[type="range"].fs-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+
+/* Leaflet Dark Theme Overrides */
+.leaflet-container {
+  background: #070812 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #151626 !important;
+  color: #F8FAFC !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65) !important;
+  border-radius: 12px !important;
+}
+
+.leaflet-control-zoom a {
+  background: #10111D !important;
+  color: #F8FAFC !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #151626 !important;
+  color: #A855F7 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

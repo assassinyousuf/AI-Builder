@@ -1,0 +1,739 @@
+<div class="min-h-screen bg-[#050509] text-[#F8FAFC] relative overflow-x-hidden">
+  <!-- Atmospheric Ambient Backdrop -->
+  <div class="ambient-backdrop"></div>
+  <div class="grain-overlay"></div>
+
+  <!-- 1. MINIMAL TRANSPARENT-TO-GLASS NAVIGATION -->
+  <header
+    class="fixed top-0 inset-x-0 z-50 transition-all duration-300"
+    [ngClass]="
+      scrolled()
+        ? 'bg-[#080913]/85 backdrop-blur-2xl border-b border-white/10 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.8)]'
+        : 'bg-transparent border-b border-transparent'
+    "
+  >
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between gap-6">
+      <!-- Left: Logo -->
+      <a routerLink="/" class="flex items-center gap-3 group">
+        <div
+          class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 via-fuchsia-500 to-pink-500 p-[1px] shadow-[0_0_24px_rgba(168,85,247,0.45)] group-hover:scale-105 transition-transform"
+        >
+          <div class="w-full h-full rounded-[11px] bg-[#080913] flex items-center justify-center">
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none">
+              <path
+                d="M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z"
+                stroke="url(#lpShieldGrad)"
+                stroke-width="1.8"
+              />
+              <circle cx="12" cy="11.5" r="2.2" fill="#D946EF" />
+              <path
+                d="M12 7V9.3M12 13.7V16M8.5 11.5H9.8M14.2 11.5H15.5"
+                stroke="#A855F7"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <defs>
+                <linearGradient id="lpShieldGrad" x1="4" y1="2" x2="20" y2="23" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#A855F7" />
+                  <stop offset="1" stop-color="#EC4899" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <span class="font-display font-bold text-lg tracking-tight text-white">
+            Fraud<span class="text-purple-400">Shield</span>
+          </span>
+          <span class="block text-[10px] tracking-widest uppercase text-zinc-500">AI Financial Defense</span>
+        </div>
+      </a>
+
+      <!-- Center: Editorial Links -->
+      <nav class="hidden lg:flex items-center gap-8 text-xs font-medium text-zinc-300">
+        <button type="button" (click)="scrollTo('product')" class="hover:text-white transition-colors">
+          Product
+        </button>
+        <button type="button" (click)="scrollTo('features')" class="hover:text-white transition-colors">
+          Features
+        </button>
+        <button type="button" (click)="scrollTo('how-it-works')" class="hover:text-white transition-colors">
+          How It Works
+        </button>
+        <button type="button" (click)="scrollTo('technology')" class="hover:text-white transition-colors">
+          Technology
+        </button>
+        <button type="button" (click)="scrollTo('about')" class="hover:text-white transition-colors">
+          About
+        </button>
+      </nav>
+
+      <!-- Right: Auth-Aware Controls -->
+      <div class="hidden md:flex items-center gap-3">
+        @if (auth.isAuthenticated()) {
+          <div class="relative">
+            <button
+              type="button"
+              (click)="profileMenuOpen.set(!profileMenuOpen())"
+              class="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+            >
+              <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center text-[10px] font-bold text-white overflow-hidden">
+                @if (auth.currentUser()?.avatarUrl; as url) {
+                  <img [src]="url" alt="Profile" class="w-full h-full object-cover" />
+                } @else {
+                  {{ auth.currentUser()?.avatarInitials || 'U' }}
+                }
+              </div>
+              <span class="text-xs font-medium text-zinc-200 max-w-[120px] truncate">
+                {{ auth.currentUser()?.fullName }}
+              </span>
+              <lucide-icon [img]="ChevronDownIcon" class="w-3.5 h-3.5 text-zinc-400" />
+            </button>
+
+            @if (profileMenuOpen()) {
+              <div class="absolute right-0 mt-2 w-56 fs-elevated shadow-2xl z-50 py-1.5 animate-page-in">
+                <div class="px-4 py-2.5 border-b border-white/8">
+                  <p class="text-xs font-semibold text-white truncate">{{ auth.currentUser()?.fullName }}</p>
+                  <p class="text-[11px] text-zinc-400 truncate">{{ auth.currentUser()?.email }}</p>
+                </div>
+                <a
+                  routerLink="/app/settings"
+                  (click)="profileMenuOpen.set(false)"
+                  class="flex items-center gap-2.5 px-4 py-2 text-xs text-zinc-300 hover:text-white hover:bg-white/5"
+                >
+                  <lucide-icon [img]="SettingsIcon" class="w-3.5 h-3.5 text-purple-400" />
+                  Account Settings
+                </a>
+                <button
+                  type="button"
+                  (click)="profileMenuOpen.set(false); auth.signOut()"
+                  class="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-zinc-400 hover:text-red-300 hover:bg-white/5"
+                >
+                  <lucide-icon [img]="LogOutIcon" class="w-3.5 h-3.5" />
+                  Sign Out
+                </button>
+              </div>
+            }
+          </div>
+
+          <a
+            routerLink="/app"
+            class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-xs font-semibold text-white flex items-center gap-2 shadow-[0_0_28px_-6px_rgba(168,85,247,0.75)] transition-all"
+          >
+            Open Workspace
+            <lucide-icon [img]="ArrowRightIcon" class="w-3.5 h-3.5" />
+          </a>
+        } @else {
+          <a
+            routerLink="/auth/sign-in"
+            class="px-4 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/6 transition-colors"
+          >
+            Sign In
+          </a>
+          <a
+            routerLink="/app"
+            class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-xs font-semibold text-white flex items-center gap-2 shadow-[0_0_28px_-6px_rgba(168,85,247,0.75)] transition-all"
+          >
+            Launch Dashboard
+            <lucide-icon [img]="ArrowRightIcon" class="w-3.5 h-3.5" />
+          </a>
+        }
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        type="button"
+        (click)="mobileNavOpen.set(!mobileNavOpen())"
+        class="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-zinc-200"
+        aria-label="Toggle navigation"
+      >
+        <lucide-icon [img]="mobileNavOpen() ? CloseIcon : MenuIcon" class="w-5 h-5" />
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    @if (mobileNavOpen()) {
+      <div class="lg:hidden bg-[#080913]/95 backdrop-blur-2xl border-b border-white/10 px-6 py-5 space-y-3 animate-page-in">
+        <button type="button" (click)="scrollTo('product')" class="block w-full text-left text-sm text-zinc-300 py-1.5">Product</button>
+        <button type="button" (click)="scrollTo('features')" class="block w-full text-left text-sm text-zinc-300 py-1.5">Features</button>
+        <button type="button" (click)="scrollTo('how-it-works')" class="block w-full text-left text-sm text-zinc-300 py-1.5">How It Works</button>
+        <button type="button" (click)="scrollTo('technology')" class="block w-full text-left text-sm text-zinc-300 py-1.5">Technology</button>
+        <button type="button" (click)="scrollTo('about')" class="block w-full text-left text-sm text-zinc-300 py-1.5">About</button>
+        <div class="pt-3 border-t border-white/8 flex items-center gap-3">
+          @if (auth.isAuthenticated()) {
+            <button
+              type="button"
+              (click)="auth.signOut(); mobileNavOpen.set(false)"
+              class="flex-1 py-2.5 rounded-xl border border-white/10 text-xs font-medium text-zinc-200 text-center"
+            >
+              Sign Out ({{ auth.currentUser()?.avatarInitials }})
+            </button>
+            <a
+              routerLink="/app"
+              class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-xs font-semibold text-white text-center"
+            >
+              Open Workspace
+            </a>
+          } @else {
+            <a
+              routerLink="/auth/sign-in"
+              (click)="mobileNavOpen.set(false)"
+              class="flex-1 py-2.5 rounded-xl border border-white/10 text-xs font-medium text-zinc-200 text-center"
+            >
+              Sign In
+            </a>
+            <a
+              routerLink="/app"
+              class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-xs font-semibold text-white text-center"
+            >
+              Launch Dashboard
+            </a>
+          }
+        </div>
+      </div>
+    }
+  </header>
+
+  <!-- 2. CINEMATIC HERO SECTION -->
+  <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 px-5 sm:px-8 max-w-7xl mx-auto">
+    <!-- Hero Ambient Radial Orbs -->
+    <div
+      class="absolute -top-10 right-0 w-[540px] h-[540px] rounded-full bg-purple-600/15 blur-[130px] pointer-events-none"
+    ></div>
+    <div
+      class="absolute top-40 -left-20 w-[420px] h-[420px] rounded-full bg-fuchsia-600/12 blur-[120px] pointer-events-none"
+    ></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+      <!-- Left Editorial Copy -->
+      <div class="lg:col-span-7 space-y-7 animate-page-in">
+        <div
+          class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[11px] font-semibold tracking-[0.18em] uppercase text-purple-300"
+        >
+          <span class="relative w-2 h-2 rounded-full bg-fuchsia-400 live-dot"></span>
+          NEXT GENERATION FINANCIAL SECURITY
+        </div>
+
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.06] text-white">
+          Fraud doesn't wait.<br />
+          <span class="gradient-text">Neither should your defense.</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl">
+          An intelligent fraud detection platform combining machine learning, explainable AI, behavioral intelligence, and network analysis to uncover suspicious financial activities in real time.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+          <a
+            routerLink="/app"
+            class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-sm font-semibold text-white flex items-center gap-2.5 shadow-[0_0_38px_-8px_rgba(217,70,239,0.75)] transition-all hover:-translate-y-0.5"
+          >
+            Explore Live Dashboard
+            <lucide-icon [img]="ArrowRightIcon" class="w-4 h-4" />
+          </a>
+
+          <button
+            type="button"
+            (click)="scrollTo('features')"
+            class="px-7 py-3.5 rounded-2xl bg-white/4 hover:bg-white/8 border border-white/12 text-sm font-semibold text-zinc-200 transition-all"
+          >
+            Explore Capabilities
+          </button>
+        </div>
+
+        <!-- Subtle Trust Telemetry Bar -->
+        <div class="pt-6 border-t border-white/8 grid grid-cols-3 gap-6 max-w-lg">
+          <div>
+            <p class="font-mono-num text-xl font-bold text-white">&lt;15 ms</p>
+            <p class="text-[11px] text-zinc-500 mt-0.5">Real-Time Inference</p>
+          </div>
+          <div>
+            <p class="font-mono-num text-xl font-bold text-purple-300">94.1%</p>
+            <p class="text-[11px] text-zinc-500 mt-0.5">Hybrid F1 Benchmark</p>
+          </div>
+          <div>
+            <p class="font-mono-num text-xl font-bold text-emerald-400">100%</p>
+            <p class="text-[11px] text-zinc-500 mt-0.5">Explainable Signals</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Cinematic 3D Shield + Metallic Ribbon + Floating Particles -->
+      <div class="lg:col-span-5 relative flex items-center justify-center min-h-[420px]">
+        <!-- Flowing Metallic SVG Ribbon Backdrop -->
+        <svg viewBox="0 0 460 460" class="absolute inset-0 w-full h-full pointer-events-none opacity-80" fill="none">
+          <path
+            d="M20 310 C 110 170, 220 390, 310 210 C 370 90, 420 140, 450 80"
+            stroke="url(#ribbonGrad1)"
+            stroke-width="2.5"
+            class="ribbon-flow"
+          />
+          <path
+            d="M10 180 C 120 80, 260 320, 360 150 C 410 70, 440 190, 455 240"
+            stroke="url(#ribbonGrad2)"
+            stroke-width="1.6"
+            opacity="0.65"
+          />
+          <defs>
+            <linearGradient id="ribbonGrad1" x1="20" y1="310" x2="450" y2="80" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#7C3AED" stop-opacity="0.1" />
+              <stop offset="0.5" stop-color="#D946EF" />
+              <stop offset="1" stop-color="#F59E0B" stop-opacity="0.6" />
+            </linearGradient>
+            <linearGradient id="ribbonGrad2" x1="10" y1="180" x2="455" y2="240" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#A855F7" />
+              <stop offset="1" stop-color="#EC4899" stop-opacity="0.2" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <!-- Translucent 3D Shield Core -->
+        <div class="hero-shield-float relative w-72 h-80 sm:w-80 sm:h-88 flex items-center justify-center">
+          <div
+            class="absolute inset-4 rounded-[36px] bg-gradient-to-br from-purple-600/25 via-fuchsia-500/15 to-transparent blur-2xl"
+          ></div>
+
+          <svg viewBox="0 0 260 300" class="w-full h-full drop-shadow-[0_25px_45px_rgba(124,58,237,0.4)]" fill="none">
+            <!-- Outer Glass Shield -->
+            <path
+              d="M130 14 L236 58 V138 C236 208 188 264 130 286 C72 264 24 208 24 138 V58 L130 14 Z"
+              fill="url(#shieldGlass)"
+              stroke="url(#shieldEdge)"
+              stroke-width="2"
+            />
+            <!-- Inner Faceted Core -->
+            <path
+              d="M130 42 L208 75 V138 C208 192 172 236 130 254 C88 236 52 192 52 138 V75 L130 42 Z"
+              fill="rgba(16, 17, 29, 0.72)"
+              stroke="rgba(217, 70, 239, 0.45)"
+              stroke-width="1.2"
+            />
+            <!-- Neural Ring -->
+            <circle cx="130" cy="145" r="42" stroke="url(#shieldEdge)" stroke-width="1.5" stroke-dasharray="6 5" />
+            <circle cx="130" cy="145" r="20" fill="url(#coreGlow)" />
+            <circle cx="130" cy="145" r="6" fill="#F8FAFC" />
+            <!-- Crosshair Nodes -->
+            <circle cx="130" cy="103" r="4" fill="#A855F7" />
+            <circle cx="172" cy="145" r="4" fill="#EC4899" />
+            <circle cx="130" cy="187" r="4" fill="#A855F7" />
+            <circle cx="88" cy="145" r="4" fill="#D946EF" />
+
+            <defs>
+              <linearGradient id="shieldGlass" x1="24" y1="14" x2="236" y2="286" gradientUnits="userSpaceOnUse">
+                <stop stop-color="rgba(168, 85, 247, 0.24)" />
+                <stop offset="0.55" stop-color="rgba(16, 17, 29, 0.65)" />
+                <stop offset="1" stop-color="rgba(236, 72, 153, 0.2)" />
+              </linearGradient>
+              <linearGradient id="shieldEdge" x1="24" y1="14" x2="236" y2="286" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#E9D5FF" stop-opacity="0.85" />
+                <stop offset="0.5" stop-color="#A855F7" />
+                <stop offset="1" stop-color="#EC4899" />
+              </linearGradient>
+              <radialGradient id="coreGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(130 145) scale(20)">
+                <stop stop-color="#EC4899" />
+                <stop offset="1" stop-color="#7C3AED" stop-opacity="0.2" />
+              </radialGradient>
+            </defs>
+          </svg>
+
+          <!-- Floating Financial Signal Cards -->
+          <div
+            class="particle-float-1 absolute -top-2 -left-6 sm:-left-10 px-3.5 py-2.5 rounded-2xl bg-[#10111D]/90 backdrop-blur-xl border border-purple-500/35 shadow-xl"
+          >
+            <p class="text-[10px] uppercase tracking-wider text-zinc-400">Risk Signal</p>
+            <p class="font-mono-num text-xs font-bold text-red-400 mt-0.5">TXN-4821 • BLOCKED</p>
+          </div>
+
+          <div
+            class="particle-float-2 absolute bottom-6 -right-4 sm:-right-8 px-3.5 py-2.5 rounded-2xl bg-[#10111D]/90 backdrop-blur-xl border border-emerald-500/35 shadow-xl"
+          >
+            <p class="text-[10px] uppercase tracking-wider text-zinc-400">Protected Flow</p>
+            <p class="font-mono-num text-xs font-bold text-emerald-400 mt-0.5">
+              \${{ kpis().moneySaved | number: '1.0-0' }} Saved
+            </p>
+          </div>
+
+          <div
+            class="particle-float-3 absolute top-1/2 -right-8 px-3 py-1.5 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/40 text-[10px] font-mono-num font-semibold text-fuchsia-200 backdrop-blur-md"
+          >
+            SHAP + GNN Active
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. LIVE INTELLIGENCE PREVIEW -->
+  <section id="product" class="reveal-section py-20 px-5 sm:px-8 max-w-7xl mx-auto">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-semibold uppercase tracking-widest text-purple-300 mb-3">
+          LIVE INTELLIGENCE PREVIEW
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white">
+          Operational clarity at millisecond speed.
+        </h2>
+      </div>
+      <a
+        routerLink="/app"
+        class="text-xs font-semibold text-purple-300 hover:text-white flex items-center gap-1.5 self-start sm:self-auto"
+      >
+        Open Full Command Center
+        <lucide-icon [img]="ArrowRightIcon" class="w-3.5 h-3.5" />
+      </a>
+    </div>
+
+    <!-- Showcase Glass Frame -->
+    <div class="fs-card p-6 sm:p-8 border-purple-500/20 shadow-[0_30px_90px_-30px_rgba(124,58,237,0.3)] space-y-6">
+      <!-- Top 3 Live Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="p-4 rounded-2xl bg-[#090A16] border border-white/8">
+          <p class="text-xs text-zinc-400">Transactions Processed</p>
+          <p class="font-mono-num text-2xl font-bold text-white mt-1">{{ kpis().totalProcessed | number }}</p>
+          <p class="text-[11px] text-emerald-400 mt-1">Live stream active ({{ kpis().tps }} TPS)</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-[#090A16] border border-red-500/20">
+          <p class="text-xs text-zinc-400">Fraud Detected</p>
+          <p class="font-mono-num text-2xl font-bold text-white mt-1">{{ kpis().fraudDetected | number }}</p>
+          <p class="text-[11px] text-red-400 mt-1">{{ kpis().suspiciousCount }} high-risk flags in buffer</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-[#090A16] border border-white/8">
+          <p class="text-xs text-zinc-400">Financial Exposure</p>
+          <p class="font-mono-num text-2xl font-bold text-purple-300 mt-1">\${{ kpis().exposureAmount | number: '1.0-0' }}</p>
+          <p class="text-[11px] text-zinc-500 mt-1">Flagged transaction exposure</p>
+        </div>
+      </div>
+
+      <!-- Feed + Donut + Alerts -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Live Transaction Feed -->
+        <div class="lg:col-span-5 p-4 rounded-2xl bg-[#090A16] border border-white/8 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-white">Live Transaction Feed</span>
+            <span class="text-[10px] font-mono-num text-emerald-400">STREAMING</span>
+          </div>
+          <div class="space-y-2">
+            @for (t of previewTxns(); track t.id) {
+              <div class="p-2.5 rounded-xl bg-[#10111D] border border-white/6 flex items-center justify-between text-xs">
+                <div>
+                  <span class="font-mono-num font-semibold text-purple-300">{{ t.id }}</span>
+                  <span class="text-zinc-400 ml-2">{{ t.location.city }}</span>
+                </div>
+                <div class="flex items-center gap-2.5">
+                  <span class="font-mono-num font-semibold text-white">\${{ t.amount | number: '1.0-0' }}</span>
+                  <app-risk-badge [riskLevel]="t.prediction.riskLevel" />
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Risk Distribution Chart -->
+        <div class="lg:col-span-3 p-4 rounded-2xl bg-[#090A16] border border-white/8">
+          <p class="text-xs font-semibold text-white mb-2">Risk Distribution</p>
+          <app-echarts [option]="riskDonutOption()" height="205px" />
+        </div>
+
+        <!-- Recent Alerts -->
+        <div class="lg:col-span-4 p-4 rounded-2xl bg-[#090A16] border border-white/8 space-y-2.5">
+          <p class="text-xs font-semibold text-white flex items-center gap-1.5">
+            <lucide-icon [img]="AlertIcon" class="w-3.5 h-3.5 text-red-400" />
+            Recent Alerts
+          </p>
+          @for (a of previewAlerts(); track a.id) {
+            <div class="p-2.5 rounded-xl bg-red-500/8 border border-red-500/20 text-xs">
+              <p class="font-semibold text-white truncate">{{ a.title }}</p>
+              <p class="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">{{ a.description }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FEATURES SECTION (6 CAPABILITIES) -->
+  <section id="features" class="reveal-section py-20 px-5 sm:px-8 max-w-7xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-purple-400">CAPABILITIES</p>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
+        Six layers of intelligent financial defense.
+      </h2>
+      <p class="text-sm text-zinc-400 mt-3">
+        Designed for enterprise fraud teams who demand precision, low false positives, and full model transparency.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (f of features; track f.title) {
+        <div
+          class="fs-card fs-card-hover p-6 relative overflow-hidden group"
+        >
+          <div
+            class="w-11 h-11 rounded-2xl bg-gradient-to-br border border-purple-500/25 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform"
+            [ngClass]="f.accent"
+          >
+            <lucide-icon [img]="f.icon" class="w-5 h-5 text-purple-300" />
+          </div>
+          <h3 class="font-display text-lg font-bold text-white">{{ f.title }}</h3>
+          <p class="text-xs sm:text-sm text-zinc-400 mt-2 leading-relaxed">{{ f.description }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 5. HOW IT WORKS (6-STEP WORKFLOW) -->
+  <section id="how-it-works" class="reveal-section py-20 px-5 sm:px-8 max-w-7xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-fuchsia-400">WORKFLOW ARCHITECTURE</p>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
+        From raw payment signal to explainable decision.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      @for (step of workflowSteps; track step.step) {
+        <div class="fs-card p-6 relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono-num text-xs font-bold px-2.5 py-1 rounded-lg bg-purple-500/15 text-purple-300 border border-purple-500/25">
+              STEP {{ step.step }}
+            </span>
+            <span class="h-[2px] w-14 gradient-accent-bar rounded-full connector-glow"></span>
+          </div>
+          <h3 class="font-display text-base font-bold text-white">{{ step.title }}</h3>
+          <p class="text-xs text-zinc-400 mt-2 leading-relaxed">{{ step.detail }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 6. ATTACK SIMULATION SHOWCASE -->
+  <section class="reveal-section py-20 px-5 sm:px-8 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-pink-400">ADVERSARIAL LAB</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
+          Test defenses against live attack simulations.
+        </h2>
+      </div>
+      <p class="text-xs text-zinc-400 max-w-md">
+        Launch any scenario directly into the FraudShield Simulator to watch live alerts, graph clusters, and case triage react in real time.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      @for (sc of attackScenarios; track sc.id) {
+        <div class="fs-card fs-card-hover p-7 flex flex-col justify-between">
+          <div>
+            <span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/25 mb-4">
+              {{ sc.tag }}
+            </span>
+            <h3 class="font-display text-xl font-bold text-white">{{ sc.title }}</h3>
+            <p class="text-xs sm:text-sm text-zinc-400 mt-2.5 leading-relaxed">{{ sc.description }}</p>
+
+            <ul class="mt-5 space-y-2">
+              @for (h of sc.highlights; track h) {
+                <li class="flex items-center gap-2 text-xs text-zinc-300">
+                  <lucide-icon [img]="CheckIcon" class="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                  <span>{{ h }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+
+          <button
+            type="button"
+            (click)="launchScenario(sc.id)"
+            class="mt-7 w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-xs font-semibold text-white flex items-center justify-center gap-2 transition-all"
+          >
+            <lucide-icon [img]="SwordsIcon" class="w-4 h-4" />
+            Launch Simulation
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 7. EXPLAINABLE AI SHOWCASE -->
+  <section class="reveal-section py-20 px-5 sm:px-8 max-w-7xl mx-auto">
+    <div class="fs-card p-6 sm:p-10 border-purple-500/25 relative overflow-hidden">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-8">
+        <div>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-purple-400">
+            EXPLAINABLE AI SHOWCASE
+          </span>
+          <h2 class="font-display text-2xl sm:text-3xl font-bold text-white mt-1">
+            Every risk score backed by transparent attribution.
+          </h2>
+        </div>
+        <a
+          routerLink="/app/explainability"
+          class="px-4 py-2 rounded-xl bg-white/6 hover:bg-white/10 border border-white/10 text-xs font-semibold text-white flex items-center gap-1.5"
+        >
+          Inspect in Explainability Lab
+          <lucide-icon [img]="ArrowRightIcon" class="w-3.5 h-3.5" />
+        </a>
+      </div>
+
+      @if (sampleExplainTxn(); as txn) {
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Gauge -->
+          <div class="lg:col-span-3 flex flex-col items-center p-5 rounded-2xl bg-[#090A16] border border-white/8">
+            <app-risk-gauge [score]="txn.prediction.riskScore" [size]="142" [strokeWidth]="11" />
+            <p class="font-mono-num text-xs font-bold text-purple-300 mt-3">{{ txn.id }}</p>
+            <p class="text-[11px] text-zinc-400">Decision: {{ txn.prediction.modelDecision }}</p>
+          </div>
+
+          <!-- Top 5 SHAP Contributions -->
+          <div class="lg:col-span-5 space-y-3 p-5 rounded-2xl bg-[#090A16] border border-white/8">
+            <p class="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              Top 5 SHAP Feature Contributions
+            </p>
+            @for (s of txn.explanation.shapContributions; track s.feature) {
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-zinc-200">{{ s.label }}</span>
+                  <span
+                    class="font-mono-num font-semibold"
+                    [ngClass]="s.contribution >= 0 ? 'text-red-400' : 'text-emerald-400'"
+                  >
+                    {{ s.contribution >= 0 ? '+' : '' }}{{ s.contribution.toFixed(2) }}
+                  </span>
+                </div>
+                <div class="h-1.5 rounded-full bg-white/8 overflow-hidden">
+                  <div
+                    class="h-full rounded-full"
+                    [ngClass]="s.contribution >= 0 ? 'bg-gradient-to-r from-amber-500 to-red-500' : 'bg-emerald-500'"
+                    [style.width.%]="Math.min(100, Math.abs(s.contribution) * 260)"
+                  ></div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- AI Explanation & Summary -->
+          <div class="lg:col-span-4 p-5 rounded-2xl bg-[#090A16] border border-purple-500/25 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-purple-300 flex items-center gap-1.5">
+                <lucide-icon [img]="SparklesIcon" class="w-4 h-4" />
+                AI Reason Code
+              </span>
+              <span class="font-mono-num text-[11px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-200">
+                {{ txn.explanation.reasonCode.code }}
+              </span>
+            </div>
+            <p class="text-xs font-semibold text-white">{{ txn.explanation.reasonCode.headline }}</p>
+            <p class="text-xs text-zinc-400 leading-relaxed">{{ txn.explanation.summary }}</p>
+            <p class="text-[11px] text-amber-300 pt-1 border-t border-white/8">
+              Recommended: {{ txn.explanation.reasonCode.recommendedAction }}
+            </p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 8. TECHNOLOGY STACK SECTION -->
+  <section id="technology" class="reveal-section py-20 px-5 sm:px-8 max-w-7xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-purple-400">SYSTEM ARCHITECTURE</p>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
+        Built for modular, real-time scale.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      @for (t of techStack; track t.layer) {
+        <div class="fs-card p-5 space-y-3">
+          <div class="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-500/25 flex items-center justify-center">
+            <lucide-icon [img]="t.icon" class="w-4 h-4 text-purple-300" />
+          </div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-400">{{ t.layer }}</h3>
+          <ul class="space-y-1.5">
+            @for (item of t.items; track item) {
+              <li class="text-xs font-medium text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400"></span>
+                {{ item }}
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 9. FINAL CTA -->
+  <section id="about" class="reveal-section py-24 px-5 sm:px-8 max-w-5xl mx-auto text-center">
+    <div class="fs-card p-10 sm:p-14 border-purple-500/30 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-purple-600/15 via-transparent to-pink-600/15 pointer-events-none"></div>
+      <div class="relative z-10 space-y-6">
+        <h2 class="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          Make every transaction count.<br />
+          <span class="gradient-text">Detect what others miss.</span>
+        </h2>
+        <p class="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto">
+          Explore the future of intelligent financial fraud detection.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <a
+            routerLink="/app"
+            class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-sm font-semibold text-white flex items-center gap-2 shadow-[0_0_32px_-6px_rgba(168,85,247,0.8)] transition-all"
+          >
+            Launch Workspace
+            <lucide-icon [img]="ArrowRightIcon" class="w-4 h-4" />
+          </a>
+          <a
+            routerLink="/app/monitoring"
+            class="px-7 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/12 text-sm font-semibold text-white transition-all"
+          >
+            Explore Platform
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FOOTER -->
+  <footer class="border-t border-white/8 bg-[#080913]/80 py-12 px-5 sm:px-8">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 text-xs">
+      <div class="md:col-span-5 space-y-3">
+        <div class="font-display font-bold text-lg text-white">
+          Fraud<span class="text-purple-400">Shield</span>
+        </div>
+        <p class="text-zinc-400 max-w-sm leading-relaxed">
+          Intelligent Fraud Detection. Explainable Decisions. Enterprise financial intelligence combining real-time ML scoring, SHAP explainability, graph analytics, and AI investigation workflows.
+        </p>
+        <p class="text-[11px] text-purple-300 font-medium">
+          Enterprise Financial Risk & Intelligence Platform
+        </p>
+      </div>
+
+      <div class="md:col-span-2 space-y-2">
+        <p class="font-semibold text-white uppercase tracking-wider text-[11px]">Product</p>
+        <a routerLink="/app" class="block text-zinc-400 hover:text-white">Command Center</a>
+        <a routerLink="/app/monitoring" class="block text-zinc-400 hover:text-white">Live Stream</a>
+        <a routerLink="/app/simulator" class="block text-zinc-400 hover:text-white">Attack Simulator</a>
+        <a routerLink="/app/case-queue" class="block text-zinc-400 hover:text-white">Case Queue</a>
+      </div>
+
+      <div class="md:col-span-3 space-y-2">
+        <p class="font-semibold text-white uppercase tracking-wider text-[11px]">Intelligence</p>
+        <a routerLink="/app/explainability" class="block text-zinc-400 hover:text-white">Explainable AI (SHAP)</a>
+        <a routerLink="/app/fraud-network" class="block text-zinc-400 hover:text-white">Fraud Network Graph</a>
+        <a routerLink="/app/analyst-copilot" class="block text-zinc-400 hover:text-white">AI Investigation Copilot</a>
+        <a routerLink="/app/threshold-tuner" class="block text-zinc-400 hover:text-white">Threshold Tuner</a>
+      </div>
+
+      <div class="md:col-span-2 space-y-2">
+        <p class="font-semibold text-white uppercase tracking-wider text-[11px]">Architecture</p>
+        <button type="button" (click)="scrollTo('technology')" class="block text-zinc-400 hover:text-white">Technology Stack</button>
+        <a routerLink="/app/model-overview" class="block text-zinc-400 hover:text-white">Model Registry</a>
+        <a routerLink="/app/federated-learning" class="block text-zinc-400 hover:text-white">Federated Learning</a>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto mt-10 pt-6 border-t border-white/6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500">
+      <span>© 2026 FraudShield. All rights reserved.</span>
+      <span>Enterprise Financial Intelligence Architecture</span>
+    </div>
+  </footer>
+</div>
