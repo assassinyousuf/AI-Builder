@@ -36,24 +36,39 @@ import {
   LogOut,
   ChevronDown,
   Settings,
+  SendHorizontal,
+  Building2,
+  RotateCcw,
+  Radio,
 } from 'lucide-angular';
+import { FormsModule } from '@angular/forms';
 import { FraudStoreService } from '../../core/state/fraud-store.service';
 import { MockTransactionService } from '../../core/services/mock-transaction.service';
 import { AuthService } from '../../core/auth/services/auth.service';
+import { TransactionService } from '../../core/services/transaction.service';
+import { AlertRealtimeService } from '../../core/services/alert-realtime.service';
+import {
+  SimulateTransactionPayload,
+  SimulateTransactionResponse,
+  RealTimeFraudAlert,
+} from '../../core/models/playground.models';
 import { EchartsWrapperComponent } from '../../shared/components/echarts-wrapper.component';
 import { RiskGaugeComponent } from '../../shared/components/risk-gauge.component';
 import { RiskBadgeComponent } from '../../shared/components/risk-badge.component';
+import { TransactionFlow3dComponent, FlowTransactionInput } from '../../shared/components/transaction-flow-3d/transaction-flow-3d.component';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule,
     LucideAngularModule,
     EchartsWrapperComponent,
     RiskGaugeComponent,
     RiskBadgeComponent,
+    TransactionFlow3dComponent,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css',
@@ -61,6 +76,8 @@ import { RiskBadgeComponent } from '../../shared/components/risk-badge.component
 export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly store = inject(FraudStoreService);
   readonly auth = inject(AuthService);
+  readonly liveTxnService = inject(TransactionService);
+  readonly realtime = inject(AlertRealtimeService);
   private readonly txnService = inject(MockTransactionService);
   private readonly router = inject(Router);
   private readonly hostRef = inject(ElementRef<HTMLElement>);
@@ -69,6 +86,117 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly mobileNavOpen = signal(false);
   readonly signInModalOpen = signal(false);
   readonly profileMenuOpen = signal(false);
+  readonly simulatorViewMode = signal<'3d' | 'form'>('3d');
+
+  // Live Landing Simulation State
+  readonly landingSimResult = signal<SimulateTransactionResponse | null>(null);
+  readonly landingSimAlert = signal<RealTimeFraudAlert | null>(null);
+  readonly activeLandingPresetId = signal<string>('preset-ato');
+
+  readonly flow3dData = computed<FlowTransactionInput>(() => {
+    const res = this.landingSimResult();
+    const form = this.landingForm;
+    if (res) {
+      const isFraud = res.decision === 'Blocked' || res.model_prediction.prediction === 'Fraudulent';
+      return {
+        senderBank: res.transaction.sender_bank_name || 'Aegis Capital Bank',
+        senderAccount: res.transaction.sender_account,
+        senderName: res.transaction.sender_name,
+        receiverBank: res.transaction.receiver_bank_name || 'Apex Global Bank',
+        recipientAccount: res.transaction.recipient_account,
+        recipientName: res.transaction.recipient_name,
+        amount: res.transaction.amount,
+        currency: res.transaction.currency,
+        type: res.transaction.type,
+        isFraud,
+        score: res.model_prediction.risk_score,
+        decision: res.decision,
+        latency: res.model_prediction.inference_latency_ms,
+        reasons: res.decision_details?.reasons || [],
+        alertNotification: res.alert?.title
+      };
+    }
+    const isAttack = this.activeLandingPresetId() === 'preset-ato' || this.activeLandingPresetId() === 'preset-bot';
+    return {
+      senderBank: form.sending_bank_id === 'BANK-AEGIS' ? 'Aegis Capital Bank' : form.sending_bank_id === 'BANK-APEX' ? 'Apex Global Bank' : 'Vanguard Crest Bank',
+      senderAccount: form.sender_account,
+      senderName: form.sender_name,
+      receiverBank: form.receiving_bank_id === 'BANK-APEX' ? 'Apex Global Bank' : form.receiving_bank_id === 'BANK-VANG' ? 'Vanguard Crest Bank' : 'Aegis Capital Bank',
+      recipientAccount: form.recipient_account,
+      recipientName: form.recipient_name,
+      amount: form.amount,
+      currency: form.currency,
+      type: form.transaction_type,
+      isFraud: isAttack,
+      score: isAttack ? 87 : 12,
+      decision: isAttack ? 'Blocked' : 'Approved',
+      latency: 7.8,
+      reasons: isAttack
+        ? ['DistilBERT behavioral sequence anomaly detected', 'Credential modification prior to wire dispatch']
+        : ['Consistent account holder behavioral baseline', 'Low risk transaction pattern']
+    };
+  });
+
+  landingForm: SimulateTransactionPayload = {
+    sending_bank_id: 'BANK-AEGIS',
+    receiving_bank_id: 'BANK-APEX',
+    sender_account: 'ACC-AEGIS-90412',
+    sender_name: 'Aarav Mehta',
+    recipient_account: 'ACC-APEX-44109',
+    recipient_name: 'Liam Chen',
+    amount: 4800,
+    currency: 'USD',
+    transaction_type: 'Wire Transfer',
+    description: 'Adversarial account takeover cashout attempt',
+    behavioral_session_ref: 'SES-ANOMALOUS-TAKEOVER',
+  };
+
+  readonly landingPresets = [
+    {
+      id: 'preset-ato',
+      name: 'Adversarial Takeover',
+      badge: 'Critical Attack',
+      color: 'bg-red-500/20 text-red-300 border-red-500/30',
+      amount: 4800,
+      currency: 'USD',
+      type: 'Wire Transfer',
+      sessionRef: 'SES-ANOMALOUS-TAKEOVER',
+      desc: 'Hijacked session with immediate beneficiary addition and wire cashout.',
+    },
+    {
+      id: 'preset-legit',
+      name: 'Expat Remittance',
+      badge: 'Legitimate',
+      color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+      amount: 850,
+      currency: 'USD',
+      type: 'International Remittance',
+      sessionRef: 'SES-NORMAL-SALARY',
+      desc: 'Trusted payroll remittance pattern to family in Dhaka.',
+    },
+    {
+      id: 'preset-bot',
+      name: 'Botnet Probe',
+      badge: 'Botnet Signal',
+      color: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+      amount: 1500,
+      currency: 'GBP',
+      type: 'Card Payment',
+      sessionRef: 'SES-HEADLESS-BOT',
+      desc: 'Headless browser proxy executing rapid automated balance testing.',
+    },
+    {
+      id: 'preset-highval',
+      name: 'Institutional Wire',
+      badge: 'Policy Review',
+      color: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+      amount: 45000,
+      currency: 'USD',
+      type: 'Wire Transfer',
+      sessionRef: 'SES-VELOCITY-PROBE',
+      desc: 'High-value treasury transfer triggering secondary review rule.',
+    },
+  ];
 
   private observer: IntersectionObserver | null = null;
 
@@ -97,6 +225,45 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly LogOutIcon = LogOut;
   readonly ChevronDownIcon = ChevronDown;
   readonly SettingsIcon = Settings;
+  readonly SendIcon = SendHorizontal;
+  readonly BuildingIcon = Building2;
+  readonly RotateIcon = RotateCcw;
+  readonly RadioIcon = Radio;
+
+  selectLandingPreset(p: any): void {
+    this.activeLandingPresetId.set(p.id);
+    this.landingForm = {
+      ...this.landingForm,
+      amount: p.amount,
+      currency: p.currency,
+      transaction_type: p.type,
+      behavioral_session_ref: p.sessionRef,
+      description: p.desc,
+    };
+  }
+
+  runLandingSimulation(): void {
+    this.liveTxnService.simulateTransaction(this.landingForm).subscribe({
+      next: (res) => {
+        this.landingSimResult.set(res);
+        if (res.alert) {
+          this.landingSimAlert.set(res.alert);
+        }
+        this.store.showToast(
+          `DistilBERT Decision: ${res.decision.toUpperCase()}`,
+          `Scored ${res.model_prediction.risk_score}/100 in ${res.model_prediction.inference_latency_ms}ms`,
+          res.decision === 'Blocked' ? 'critical' : res.decision === 'Flagged for Review' ? 'warning' : 'success'
+        );
+      },
+      error: (err) => {
+        this.store.showToast('Simulation Error', err.message || 'Error executing simulation.', 'critical');
+      },
+    });
+  }
+
+  resetLandingForm(): void {
+    this.selectLandingPreset(this.landingPresets[0]);
+  }
 
   readonly kpis = this.store.kpis;
   readonly previewTxns = computed(() => this.store.transactions().slice(0, 4));
@@ -255,6 +422,9 @@ export class LandingPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.txnService.startLiveStream();
+    this.realtime.alertCreated$.subscribe((alert) => {
+      this.landingSimAlert.set(alert);
+    });
   }
 
   ngAfterViewInit(): void {

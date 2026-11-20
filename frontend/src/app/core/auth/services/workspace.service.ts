@@ -30,16 +30,56 @@ export class WorkspaceService {
         size: '500+ employees',
         country: 'United States',
         website: 'https://aegiscapital.com',
-        description: 'Global institutional banking & real-time payment risk operations.',
+        description: 'Global institutional banking & real-time payment risk operations (Bank A).',
+      },
+      {
+        id: 'ORG-8802',
+        name: 'Apex Global Bank',
+        email: 'security@apexglobal.sg',
+        industry: 'Banking',
+        size: '500+ employees',
+        country: 'Singapore',
+        website: 'https://apexglobal.sg',
+        description: 'Cross-border remittance & liquidity hub (Bank B).',
+      },
+      {
+        id: 'ORG-8803',
+        name: 'Central Consortium Network',
+        email: 'consortium@fraudshield.ai',
+        industry: 'FinTech',
+        size: '500+ employees',
+        country: 'Global Consortium',
+        website: 'https://fraudshield.ai',
+        description: 'Multi-bank regulatory oversight & cross-network fraud intelligence.',
       },
     ],
     workspaces: [
       {
         id: 'WS-901',
-        name: 'Aegis Global Fraud Ops',
+        name: 'Aegis Capital Bank (Bank A)',
         type: 'organization',
         organizationId: 'ORG-8801',
-        timezone: 'UTC+06:00 (Asia/Dhaka)',
+        timezone: 'UTC-05:00 (New York)',
+        currency: 'USD',
+        notificationsEnabled: true,
+        onboardingCompleted: true,
+      },
+      {
+        id: 'WS-903',
+        name: 'Apex Global Bank (Bank B)',
+        type: 'organization',
+        organizationId: 'ORG-8802',
+        timezone: 'UTC+08:00 (Singapore)',
+        currency: 'SGD',
+        notificationsEnabled: true,
+        onboardingCompleted: true,
+      },
+      {
+        id: 'WS-CENTRAL',
+        name: 'Central Intelligence Network',
+        type: 'organization',
+        organizationId: 'ORG-8803',
+        timezone: 'UTC+00:00 (UTC)',
         currency: 'USD',
         notificationsEnabled: true,
         onboardingCompleted: true,
@@ -56,6 +96,8 @@ export class WorkspaceService {
     ],
     memberships: [
       { id: 'MEM-1', userId: 'USR-1001', workspaceId: 'WS-901', organizationId: 'ORG-8801', role: 'OWNER' },
+      { id: 'MEM-3', userId: 'USR-1001', workspaceId: 'WS-903', organizationId: 'ORG-8802', role: 'OWNER' },
+      { id: 'MEM-4', userId: 'USR-1001', workspaceId: 'WS-CENTRAL', organizationId: 'ORG-8803', role: 'OWNER' },
       { id: 'MEM-2', userId: 'USR-1001', workspaceId: 'WS-902', role: 'OWNER' },
     ],
     teamMembers: [
@@ -221,7 +263,21 @@ export class WorkspaceService {
     try {
       const raw = localStorage.getItem(WORKSPACE_STORAGE_KEY);
       if (!raw) return this.defaultState;
-      return JSON.parse(raw) as PersistedWorkspaceState;
+      const parsed = JSON.parse(raw) as PersistedWorkspaceState;
+      // Ensure newly introduced bank workspaces exist in persisted state
+      const existingIds = new Set(parsed.workspaces.map((w) => w.id));
+      for (const dw of this.defaultState.workspaces) {
+        if (!existingIds.has(dw.id)) {
+          parsed.workspaces.push(dw);
+        }
+      }
+      const existingOrgIds = new Set(parsed.organizations.map((o) => o.id));
+      for (const org of this.defaultState.organizations) {
+        if (!existingOrgIds.has(org.id)) {
+          parsed.organizations.push(org);
+        }
+      }
+      return parsed;
     } catch {
       return this.defaultState;
     }

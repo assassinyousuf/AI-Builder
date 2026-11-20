@@ -129,6 +129,20 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'transaction-playground',
+        canActivate: [roleGuard],
+        data: { roles: ['OWNER', 'ADMINISTRATOR', 'FRAUD_ANALYST', 'INVESTIGATOR'] },
+        loadComponent: () =>
+          import('./features/transaction-playground/transaction-playground.component').then(
+            (m) => m.TransactionPlaygroundComponent
+          ),
+      },
+      {
+        path: 'playground',
+        redirectTo: 'transaction-playground',
+        pathMatch: 'full',
+      },
+      {
         path: 'cases',
         canActivate: [roleGuard],
         data: { roles: ['OWNER', 'ADMINISTRATOR', 'FRAUD_ANALYST', 'INVESTIGATOR'] },

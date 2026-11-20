@@ -55,11 +55,12 @@
 
 .ribbon-flow {
   stroke-dasharray: 18 12;
-  animation: ribbonFlow 6s linear infinite;
+  animation: none;
 }
 
 .connector-glow {
-  animation: connectorPulse 2.4s ease-in-out infinite;
+  opacity: 0.65;
+  animation: none;
 }
 
 /* Scroll reveal */

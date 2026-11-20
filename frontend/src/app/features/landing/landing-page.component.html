@@ -117,6 +117,12 @@
           </div>
 
           <a
+            routerLink="/app/transaction-playground"
+            class="px-4 py-2 rounded-xl text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 transition-all flex items-center gap-1.5"
+          >
+            <span>Transaction Playground</span>
+          </a>
+          <a
             routerLink="/app"
             class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-xs font-semibold text-white flex items-center gap-2 shadow-[0_0_28px_-6px_rgba(168,85,247,0.75)] transition-all"
           >
@@ -124,6 +130,12 @@
             <lucide-icon [img]="ArrowRightIcon" class="w-3.5 h-3.5" />
           </a>
         } @else {
+          <a
+            routerLink="/app/transaction-playground"
+            class="px-4 py-2 rounded-xl text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 transition-all flex items-center gap-1.5"
+          >
+            <span>Playground</span>
+          </a>
           <a
             routerLink="/auth/sign-in"
             class="px-4 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/6 transition-colors"
@@ -196,21 +208,13 @@
 
   <!-- 2. CINEMATIC HERO SECTION -->
   <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 px-5 sm:px-8 max-w-7xl mx-auto">
-    <!-- Hero Ambient Radial Orbs -->
-    <div
-      class="absolute -top-10 right-0 w-[540px] h-[540px] rounded-full bg-purple-600/15 blur-[130px] pointer-events-none"
-    ></div>
-    <div
-      class="absolute top-40 -left-20 w-[420px] h-[420px] rounded-full bg-fuchsia-600/12 blur-[120px] pointer-events-none"
-    ></div>
-
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
       <!-- Left Editorial Copy -->
       <div class="lg:col-span-7 space-y-7 animate-page-in">
         <div
           class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/25 text-[11px] font-semibold tracking-[0.18em] uppercase text-purple-300"
         >
-          <span class="relative w-2 h-2 rounded-full bg-fuchsia-400 live-dot"></span>
+          <span class="w-2 h-2 rounded-full bg-fuchsia-400"></span>
           NEXT GENERATION FINANCIAL SECURITY
         </div>
 
@@ -225,19 +229,26 @@
 
         <div class="flex flex-wrap items-center gap-4 pt-2">
           <a
-            routerLink="/app"
+            routerLink="/app/transaction-playground"
             class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-sm font-semibold text-white flex items-center gap-2.5 shadow-[0_0_38px_-8px_rgba(217,70,239,0.75)] transition-all hover:-translate-y-0.5"
           >
-            Explore Live Dashboard
+            Launch Transaction Playground
             <lucide-icon [img]="ArrowRightIcon" class="w-4 h-4" />
+          </a>
+
+          <a
+            routerLink="/app"
+            class="px-7 py-3.5 rounded-2xl bg-[#121324] hover:bg-[#1a1b32] border border-white/12 text-sm font-semibold text-zinc-200 transition-all"
+          >
+            Explore Live Dashboard
           </a>
 
           <button
             type="button"
             (click)="scrollTo('features')"
-            class="px-7 py-3.5 rounded-2xl bg-white/4 hover:bg-white/8 border border-white/12 text-sm font-semibold text-zinc-200 transition-all"
+            class="px-5 py-3.5 rounded-2xl text-sm font-medium text-zinc-400 hover:text-white transition-all"
           >
-            Explore Capabilities
+            Capabilities &darr;
           </button>
         </div>
 
@@ -358,6 +369,297 @@
           >
             SHAP + GNN Active
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2.5 INTERACTIVE LIVE BANKING TRANSACTION SIMULATOR -->
+  <section id="interactive-simulator" class="reveal-section py-16 px-5 sm:px-8 max-w-7xl mx-auto">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-[10px] font-semibold uppercase tracking-widest text-purple-300 mb-3">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          REAL-TIME DISTILBERT SIMULATION SANDBOX
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white">
+          Simulate a live transaction directly from your browser.
+        </h2>
+        <p class="text-xs sm:text-sm text-zinc-400 mt-1 max-w-2xl">
+          Test real-time interbank settlement and watch DistilBERT sequence inference score the transaction in sub-15ms.
+        </p>
+      </div>
+      <a
+        routerLink="/app/transaction-playground"
+        class="px-5 py-2.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-xs font-semibold text-purple-200 flex items-center gap-2 self-start sm:self-auto transition-all"
+      >
+        <span>Open Dedicated Playground</span>
+        <lucide-icon [img]="ArrowRightIcon" class="w-3.5 h-3.5" />
+      </a>
+    </div>
+
+    <!-- Interactive Simulation Container -->
+    <div class="fs-card p-6 sm:p-8 border-white/10 shadow-xl space-y-6">
+      <!-- 4 Quick Attack/Legit Scenario Pills -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        @for (preset of landingPresets; track preset.id) {
+          <button
+            type="button"
+            (click)="selectLandingPreset(preset)"
+            class="p-3.5 rounded-xl text-left border transition-all flex flex-col justify-between"
+            [ngClass]="
+              activeLandingPresetId() === preset.id
+                ? 'border-purple-500 bg-purple-950/30 shadow-md'
+                : 'border-white/8 bg-[#090A16] hover:border-white/20'
+            "
+          >
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider" [ngClass]="preset.color">
+                  {{ preset.badge }}
+                </span>
+                <span class="font-mono-num text-xs font-bold text-zinc-200">
+                  {{ preset.currency }} {{ preset.amount | number: '1.0-0' }}
+                </span>
+              </div>
+              <p class="text-xs font-bold text-white">{{ preset.name }}</p>
+              <p class="text-[11px] text-zinc-400 mt-1 line-clamp-2 leading-relaxed">{{ preset.desc }}</p>
+            </div>
+            <div class="mt-2.5 pt-2 border-t border-white/6 flex items-center justify-between text-[10px]">
+              <span class="text-zinc-500">{{ preset.type }}</span>
+              <span class="text-purple-400 font-semibold">Load &rarr;</span>
+            </div>
+          </button>
+        }
+      </div>
+
+      <!-- FULL 3D NEURAL TRANSACTION FLOW VISUALIZATION -->
+      <div class="space-y-3 pt-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+            <span class="text-xs font-bold uppercase tracking-wider text-white">Full 3D Real-Time Transaction Flow Simulation</span>
+          </div>
+          <span class="text-[11px] text-zinc-400 font-mono">
+            Interactive WebGL · Real-time Interception &amp; Settlement
+          </span>
+        </div>
+
+        <app-transaction-flow-3d [transactionData]="flow3dData()" />
+      </div>
+
+      <!-- Live Interactive Two-Pane Execution Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left: Form Controls (7 cols) -->
+        <div class="lg:col-span-7 p-5 rounded-2xl bg-[#090A16] border border-white/8 space-y-4">
+          <div class="flex items-center justify-between border-b border-white/8 pb-3">
+            <span class="text-xs font-bold text-white flex items-center gap-2">
+              <lucide-icon [img]="SendIcon" class="w-4 h-4 text-purple-400" />
+              Transfer Parameters &amp; Behavioral Sequence
+            </span>
+            <span class="text-[10px] text-zinc-500 font-mono-num">Real DistilBERT API Inference</span>
+          </div>
+
+          <!-- Banks Selector -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-zinc-400 mb-1">Originating Bank</label>
+              <select
+                [(ngModel)]="landingForm.sending_bank_id"
+                class="w-full px-3 py-2 rounded-xl bg-[#10111D] border border-white/10 text-xs text-white focus:outline-none focus:border-purple-500"
+              >
+                <option value="BANK-AEGIS">Aegis Capital Bank (US)</option>
+                <option value="BANK-APEX">Apex Global Bank (SG)</option>
+                <option value="BANK-VANGUARD">Vanguard International (UK)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-zinc-400 mb-1">Beneficiary Bank</label>
+              <select
+                [(ngModel)]="landingForm.receiving_bank_id"
+                class="w-full px-3 py-2 rounded-xl bg-[#10111D] border border-white/10 text-xs text-white focus:outline-none focus:border-purple-500"
+              >
+                <option value="BANK-APEX">Apex Global Bank (SG)</option>
+                <option value="BANK-AEGIS">Aegis Capital Bank (US)</option>
+                <option value="BANK-VANGUARD">Vanguard International (UK)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Amount, Currency, and Channel -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-zinc-400 mb-1">Amount</label>
+              <input
+                type="number"
+                [(ngModel)]="landingForm.amount"
+                class="w-full px-3 py-2 rounded-xl bg-[#10111D] border border-white/10 text-xs font-bold text-white font-mono-num focus:outline-none focus:border-purple-500"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-zinc-400 mb-1">Currency</label>
+              <select
+                [(ngModel)]="landingForm.currency"
+                class="w-full px-3 py-2 rounded-xl bg-[#10111D] border border-white/10 text-xs text-white focus:outline-none focus:border-purple-500"
+              >
+                <option value="USD">USD ($)</option>
+                <option value="SGD">SGD (S$)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="BDT">BDT (৳)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-zinc-400 mb-1">Transfer Channel</label>
+              <select
+                [(ngModel)]="landingForm.transaction_type"
+                class="w-full px-3 py-2 rounded-xl bg-[#10111D] border border-white/10 text-xs text-white focus:outline-none focus:border-purple-500"
+              >
+                <option value="Wire Transfer">Wire Transfer</option>
+                <option value="International Remittance">Remittance</option>
+                <option value="Card Payment">Card Payment</option>
+                <option value="ACH Transfer">ACH Transfer</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Behavioral Sequence Session Input -->
+          <div>
+            <label class="block text-[11px] font-semibold text-zinc-400 mb-1 flex items-center gap-1.5">
+              <lucide-icon [img]="FingerprintIcon" class="w-3.5 h-3.5 text-purple-400" />
+              Behavioral API Call Sequence Profile
+            </label>
+            <select
+              [(ngModel)]="landingForm.behavioral_session_ref"
+              class="w-full px-3 py-2 rounded-xl bg-[#10111D] border border-white/10 text-xs text-white focus:outline-none focus:border-purple-500 font-mono-num"
+            >
+              <option value="SES-ANOMALOUS-TAKEOVER">SES-ANOMALOUS-TAKEOVER (Password Reset &rarr; New Beneficiary &rarr; Rapid Wire)</option>
+              <option value="SES-NORMAL-SALARY">SES-NORMAL-SALARY (Login &rarr; Balance &rarr; Beneficiary &rarr; Wire)</option>
+              <option value="SES-HEADLESS-BOT">SES-HEADLESS-BOT (Headless Signature &rarr; Proxy Jump &rarr; Card Auth)</option>
+              <option value="SES-VELOCITY-PROBE">SES-VELOCITY-PROBE (MFA Fail &rarr; Repeated Probing &rarr; Treasury Wire)</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="button"
+            (click)="runLandingSimulation()"
+            [disabled]="liveTxnService.isSubmitting()"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs font-bold tracking-wide transition-all shadow-[0_0_25px_rgba(168,85,247,0.4)] disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            @if (liveTxnService.isSubmitting()) {
+              <span class="w-4 h-4 rounded-full border-2 border-white/20 border-t-white animate-spin"></span>
+              <span>Running DistilBERT Transformer Inference...</span>
+            } @else {
+              <lucide-icon [img]="SendIcon" class="w-4 h-4" />
+              <span>Execute Live Simulation &amp; Score with DistilBERT</span>
+            }
+          </button>
+        </div>
+
+        <!-- Right: Live Result Panel (5 cols) -->
+        <div class="lg:col-span-5 p-5 rounded-2xl bg-[#090A16] border border-white/8 space-y-4">
+          <div class="flex items-center justify-between border-b border-white/8 pb-3">
+            <span class="text-xs font-bold text-white flex items-center gap-2">
+              <lucide-icon [img]="CpuIcon" class="w-4 h-4 text-purple-400" />
+              Live Inference &amp; Decision Output
+            </span>
+            @if (landingSimResult(); as res) {
+              <span
+                class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
+                [ngClass]="{
+                  'bg-red-500/20 text-red-300 border border-red-500/30': res.decision === 'Blocked',
+                  'bg-amber-500/20 text-amber-300 border border-amber-500/30': res.decision === 'Flagged for Review',
+                  'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30': res.decision === 'Approved'
+                }"
+              >
+                {{ res.decision }}
+              </span>
+            }
+          </div>
+
+          @if (landingSimResult(); as res) {
+            <!-- Score & Gauge -->
+            <div class="flex items-center gap-4 p-3.5 rounded-xl bg-[#10111D] border border-white/6">
+              <app-risk-gauge [score]="res.model_prediction.risk_score" [size]="84" [strokeWidth]="7" />
+              <div class="space-y-1 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="text-zinc-400">Model:</span>
+                  <span
+                    class="font-bold px-1.5 py-0.5 rounded text-[10px]"
+                    [ngClass]="
+                      res.model_prediction.prediction === 'Fraudulent'
+                        ? 'bg-red-500/20 text-red-300'
+                        : 'bg-emerald-500/20 text-emerald-300'
+                    "
+                  >
+                    {{ res.model_prediction.prediction }}
+                  </span>
+                </div>
+                <div>
+                  <span class="text-zinc-400">Probability: </span>
+                  <span class="font-mono-num font-bold text-white">
+                    {{ (res.model_prediction.fraud_probability * 100).toFixed(1) }}%
+                  </span>
+                </div>
+                <div>
+                  <span class="text-zinc-400">Latency: </span>
+                  <span class="font-mono-num font-bold text-emerald-400">
+                    {{ res.model_prediction.inference_latency_ms }} ms
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reference & Rationale -->
+            <div class="p-3 rounded-xl bg-[#10111D] border border-white/6 space-y-1 text-xs">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-zinc-500 font-mono-num font-bold">{{ res.transaction.id }}</span>
+                <span class="text-purple-300 font-medium font-mono-num">
+                  {{ res.transaction.currency }} {{ res.transaction.amount | number: '1.2-2' }}
+                </span>
+              </div>
+              <p class="text-[11px] text-zinc-300 leading-relaxed mt-1">
+                {{ res.decision_details.reasons[0] }}
+              </p>
+            </div>
+
+            <!-- WebSocket Alert Notice if Dispatched -->
+            @if (res.alert; as al) {
+              <div class="p-3 rounded-xl bg-red-500/10 border border-red-500/25 text-xs text-red-200 space-y-1 animate-page-in">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold flex items-center gap-1.5">
+                    <lucide-icon [img]="AlertIcon" class="w-3.5 h-3.5 text-red-400" />
+                    Multi-Bank Alert Dispatched
+                  </span>
+                  <span class="text-[10px] font-mono-num opacity-75">{{ al.id }}</span>
+                </div>
+                <p class="text-[10px] opacity-90 leading-relaxed">
+                  Real-time notification sent via WebSocket to {{ al.authorized_bank_ids.join(' & ') }} + Central Network.
+                </p>
+              </div>
+            }
+
+            <div class="pt-2 text-center">
+              <a
+                routerLink="/app/transaction-playground"
+                class="text-xs font-semibold text-purple-400 hover:text-purple-300 inline-flex items-center gap-1"
+              >
+                <span>View Full Playground, Token Attribution &amp; Audit Log</span>
+                <lucide-icon [img]="ArrowRightIcon" class="w-3.5 h-3.5" />
+              </a>
+            </div>
+          } @else {
+            <div class="py-10 text-center space-y-2">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mx-auto">
+                <lucide-icon [img]="SendIcon" class="w-5 h-5" />
+              </div>
+              <p class="text-xs font-semibold text-white">Ready for Instant Simulation</p>
+              <p class="text-[11px] text-zinc-400 max-w-xs mx-auto leading-relaxed">
+                Click any scenario preset above and press "Execute Live Simulation" to observe actual DistilBERT transformer inference.
+              </p>
+            </div>
+          }
         </div>
       </div>
     </div>

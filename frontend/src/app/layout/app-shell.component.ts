@@ -43,6 +43,7 @@ import {
   User,
   Sparkles,
   CheckCheck,
+  SendHorizontal,
 } from 'lucide-angular';
 import { FraudStoreService } from '../core/state/fraud-store.service';
 import { MockTransactionService } from '../core/services/mock-transaction.service';
@@ -559,6 +560,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
       title: 'OPERATIONS',
       items: [
         { label: 'Attack Simulator', route: '/app/simulator', icon: Swords },
+        { label: 'Transaction Playground', route: '/app/transaction-playground', icon: SendHorizontal },
         {
           label: 'Case Queue',
           route: '/app/cases',

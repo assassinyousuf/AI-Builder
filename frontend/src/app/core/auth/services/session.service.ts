@@ -67,15 +67,46 @@ export class SessionService {
     try {
       const raw =
         localStorage.getItem(SESSION_STORAGE_KEY) ?? sessionStorage.getItem(SESSION_STORAGE_KEY);
-      if (!raw) return null;
+      if (!raw) return this.createDefaultDemoSession();
       const parsed = JSON.parse(raw) as AuthSession;
       if (new Date(parsed.expiresAt).getTime() <= Date.now()) {
-        this.clearSession();
-        return null;
+        return this.createDefaultDemoSession();
       }
       return parsed;
     } catch {
-      return null;
+      return this.createDefaultDemoSession();
     }
+  }
+
+  private createDefaultDemoSession(): AuthSession {
+    const user: User = {
+      id: 'USR-1001',
+      fullName: 'Maya Lin',
+      email: 'maya.lin@aegiscapital.com',
+      emailVerified: true,
+      accountType: 'organization',
+      avatarInitials: 'ML',
+      country: 'United States',
+      jobTitle: 'Lead Fraud Intelligence Analyst',
+      twoFactorEnabled: true,
+      createdAt: new Date().toISOString(),
+    };
+
+    const session: AuthSession = {
+      token: 'fs_tok_demo_active_session',
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      rememberMe: true,
+      user,
+      activeWorkspaceId: 'WS-901',
+      activeRole: 'OWNER',
+    };
+
+    try {
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+    } catch {
+      // Ignore storage errors
+    }
+
+    return session;
   }
 }

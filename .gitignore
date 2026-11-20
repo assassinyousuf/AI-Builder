@@ -1,4 +1,4 @@
-# Node / Angular
+# Node / Angular / Web
 node_modules/
 dist/
 .angular/
@@ -6,12 +6,35 @@ out-tsc/
 coverage/
 *.log
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+
 # Large binary ML model weights (>GitHub size limits)
 *.safetensors
 *.keras
 *.joblib
 *.bin
 
+# Video & Remotion temp / build
+video/node_modules/
+video/build/
+video/temp_rec/
+video/out/*.mp4
+!video/out/.gitkeep
+
+# Environment variables & secrets
+.env
+.env.local
+.env.*.local
+
 # OS / IDE
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
