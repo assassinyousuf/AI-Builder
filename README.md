@@ -14,7 +14,9 @@
 
 ## 🎬 180-Second Hackathon Pitch Video
 
-FraudShield includes an end-to-end, automated **Remotion video production suite** located in [`video/`](video/) rendering an authoritative, fast-paced 180.00-second documentary and live product demo pitch.
+[![Download Master Video](https://img.shields.io/badge/Download-Master_Pitch_Video_(MP4)-success?style=for-the-badge&logo=github)](https://github.com/assassinyousuf/AI-Builder/releases/tag/v3.0.0)
+
+FraudShield includes an end-to-end, automated **Remotion video production suite** located in [`video/`](video/) rendering an authoritative, fast-paced 180.00-second documentary and live product demo pitch. Master video available in [Releases v3.0.0](https://github.com/assassinyousuf/AI-Builder/releases/tag/v3.0.0).
 
 ![FraudShield Master Contact Sheet](video/final-contact-sheet.jpg)
 
