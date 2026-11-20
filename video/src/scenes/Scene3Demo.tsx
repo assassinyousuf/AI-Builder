@@ -4,31 +4,54 @@ import React from "react";
 import {
   AbsoluteFill,
   interpolate,
-  spring,
+  Easing,
   useCurrentFrame,
-  useVideoConfig,
   Video,
   staticFile,
 } from "remotion";
 
 export const Scene3Demo: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
   // 5 Stages of 360 frames (12s) each:
+  // Stage 0: 0 - 360 (Attack Simulator)
+  // Stage 1: 360 - 720 (Live Monitoring & 11.2ms Automated Block)
+  // Stage 2: 720 - 1080 (Explainability Lab - SHAP Waterfall)
+  // Stage 3: 1080 - 1440 (Fraud Network Topology - Coordinated Ring)
+  // Stage 4: 1440 - 1800 (AI Investigation Copilot - SAR Dossier)
+
   const stageIdx = Math.min(4, Math.floor(frame / 360));
   const stageFrame = frame % 360;
 
-  // Editorial camera motion for each stage
-  const s1Zoom = interpolate(stageFrame, [0, 360], [1.02, 1.10], { extrapolateRight: "clamp" });
-  const s2Zoom = interpolate(stageFrame, [0, 360], [1.03, 1.14], { extrapolateRight: "clamp" });
-  const s3Zoom = interpolate(stageFrame, [0, 360], [1.02, 1.12], { extrapolateRight: "clamp" });
-  const s4Zoom = interpolate(stageFrame, [0, 360], [1.04, 1.16], { extrapolateRight: "clamp" });
-  const s5Zoom = interpolate(stageFrame, [0, 360], [1.02, 1.10], { extrapolateRight: "clamp" });
+  // Head entrance (0 - 20): Smooth expansion into application viewport
+  const headScale = interpolate(frame, [0, 20], [0.97, 1.0], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateRight: "clamp",
+  });
+  const headOpacity = interpolate(frame, [0, 15], [0.85, 1.0], {
+    extrapolateRight: "clamp",
+  });
 
-  const blockSealScale = spring({ frame: Math.max(0, stageFrame - 50), fps, from: 0.3, to: 1, config: { damping: 10 } });
+  // Tail exit (1780 - 1800): Smooth transition into Scene 4
+  const tailScale = interpolate(frame, [1780, 1800], [1.0, 0.98], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
-  const sceneExit = interpolate(frame, [1770, 1800], [1, 0], {
+  // Continuous, gentle camera zoom per stage (from 1.02 to 1.06, zero snapping!)
+  const stageZoom = interpolate(stageFrame, [0, 360], [1.02, 1.06], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateRight: "clamp",
+  });
+
+  // Automated Block Seal in Stage 1: critically damped, zero wobble
+  const blockSealScale = interpolate(stageFrame, [48, 68], [0.85, 1.0], {
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const blockSealOp = interpolate(stageFrame, [48, 58], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -83,11 +106,34 @@ export const Scene3Demo: React.FC = () => {
 
   const cur = stages[stageIdx];
 
-  // Brief cinematic cutaways between stages:
-  // Frame 340 - 365: SOC Analyst Live Footage
-  // Frame 1060 - 1085: Datacenter Server Racks Live Footage
-  const showSocCutaway = frame >= 335 && frame < 365;
-  const showServerCutaway = frame >= 1055 && frame < 1085;
+  // Transition scanning line at stage boundaries (frames 348-372, 708-732, 1068-1092, 1428-1452)
+  const isTransitioning =
+    (frame >= 348 && frame <= 372) ||
+    (frame >= 708 && frame <= 732) ||
+    (frame >= 1068 && frame <= 1092) ||
+    (frame >= 1428 && frame <= 1452);
+
+  const transitionSweep = interpolate(stageFrame, [348, 372], [0, 100], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // Cinematic Cutaways with smooth 8-frame cross-fades:
+  // SOC Analyst Cutaway: frames 336 to 360 (fade in 336-344, fade out 352-360)
+  const showSocCutaway = frame >= 336 && frame < 360;
+  const socOp = showSocCutaway
+    ? frame < 344
+      ? interpolate(frame, [336, 344], [0, 0.9])
+      : interpolate(frame, [352, 360], [0.9, 0])
+    : 0;
+
+  // Server Racks Cutaway: frames 1056 to 1080 (fade in 1056-1064, fade out 1072-1080)
+  const showServerCutaway = frame >= 1056 && frame < 1080;
+  const serverOp = showServerCutaway
+    ? frame < 1064
+      ? interpolate(frame, [1056, 1064], [0, 0.9])
+      : interpolate(frame, [1072, 1080], [0.9, 0])
+    : 0;
 
   return (
     <AbsoluteFill
@@ -95,11 +141,18 @@ export const Scene3Demo: React.FC = () => {
         backgroundColor: "#050509",
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
         overflow: "hidden",
-        opacity: sceneExit,
+        opacity: headOpacity,
+        transform: `scale(${frame < 20 ? headScale : tailScale})`,
       }}
     >
       {/* Background radial lighting */}
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%, rgba(18, 59, 105, 0.22) 0%, rgba(5, 5, 9, 0.95) 80%)" }} />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "radial-gradient(circle at 50% 50%, rgba(18, 59, 105, 0.22) 0%, rgba(5, 5, 9, 0.95) 80%)",
+        }}
+      />
 
       {/* Top Breadcrumb & Live Stage Header */}
       <div
@@ -121,7 +174,17 @@ export const Scene3Demo: React.FC = () => {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ padding: "4px 12px", borderRadius: 8, backgroundColor: "rgba(0, 212, 255, 0.15)", color: "#00D4FF", fontSize: 12, fontWeight: 800, letterSpacing: 1.5 }}>
+          <div
+            style={{
+              padding: "4px 12px",
+              borderRadius: 8,
+              backgroundColor: "rgba(0, 212, 255, 0.15)",
+              color: "#00D4FF",
+              fontSize: 12,
+              fontWeight: 800,
+              letterSpacing: 1.5,
+            }}
+          >
             {cur.num}
           </div>
           <div>
@@ -135,7 +198,18 @@ export const Scene3Demo: React.FC = () => {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ padding: "8px 18px", borderRadius: 30, backgroundColor: `${cur.badgeColor}22`, border: `1px solid ${cur.badgeColor}66`, color: cur.badgeColor, fontSize: 12, fontWeight: 800, letterSpacing: 1 }}>
+          <div
+            style={{
+              padding: "8px 18px",
+              borderRadius: 30,
+              backgroundColor: `${cur.badgeColor}22`,
+              border: `1px solid ${cur.badgeColor}66`,
+              color: cur.badgeColor,
+              fontSize: 12,
+              fontWeight: 800,
+              letterSpacing: 1,
+            }}
+          >
             {cur.badge}
           </div>
           <div style={{ color: "#10b981", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", gap: 6 }}>
@@ -165,25 +239,8 @@ export const Scene3Demo: React.FC = () => {
           style={{
             width: "100%",
             height: "100%",
-            transform:
-              stageIdx === 0
-                ? `scale(${s1Zoom}) translateX(-15px)`
-                : stageIdx === 1
-                ? `scale(${s2Zoom}) translateY(-25px)`
-                : stageIdx === 2
-                ? `scale(${s3Zoom}) translateY(-20px)`
-                : stageIdx === 3
-                ? `scale(${s4Zoom})`
-                : `scale(${s5Zoom})`,
-            transformOrigin:
-              stageIdx === 1
-                ? "40% 45%"
-                : stageIdx === 2
-                ? "45% 50%"
-                : stageIdx === 3
-                ? "50% 50%"
-                : "center center",
-            transition: "transform 0.1s linear",
+            transform: `scale(${stageZoom})`,
+            transformOrigin: "center center",
           }}
         >
           {/* Continuous Screen Recording Video Playback */}
@@ -239,6 +296,7 @@ export const Scene3Demo: React.FC = () => {
             alignItems: "center",
             gap: 12,
             boxShadow: "0 10px 25px rgba(0,0,0,0.7)",
+            zIndex: 10,
           }}
         >
           <span style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: cur.badgeColor }} />
@@ -248,13 +306,14 @@ export const Scene3Demo: React.FC = () => {
         </div>
 
         {/* Stage 2 Automated Interception Seal Overlay */}
-        {stageIdx === 1 && !showSocCutaway && (
+        {stageIdx === 1 && (
           <div
             style={{
               position: "absolute",
               top: "38%",
               left: "48%",
               transform: `translate(-50%, -50%) scale(${blockSealScale})`,
+              opacity: blockSealOp,
               backgroundColor: "rgba(18, 6, 8, 0.95)",
               border: "3px solid #FF394F",
               borderRadius: 20,
@@ -279,30 +338,67 @@ export const Scene3Demo: React.FC = () => {
           </div>
         )}
 
-        {/* Cutaway Flashes */}
+        {/* High-Tech Glowing Data Scanline on Module Transitions */}
+        {isTransitioning && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: `${transitionSweep}%`,
+              width: 3,
+              backgroundColor: "#00D4FF",
+              boxShadow: "0 0 20px #00D4FF, 0 0 40px #00D4FF",
+              zIndex: 25,
+            }}
+          />
+        )}
+
+        {/* Cinematic Cutaway: SOC Analyst Telemetry Stream with smooth cross-fade */}
         {showSocCutaway && (
-          <AbsoluteFill style={{ zIndex: 40 }}>
+          <AbsoluteFill style={{ zIndex: 40, opacity: socOp }}>
             <Video
               src={staticFile("assets/footage/technology/act3_soc_analyst.mp4")}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
               startFrom={10}
             />
             <div style={{ position: "absolute", inset: 0, background: "rgba(5, 5, 9, 0.4)" }} />
-            <div style={{ position: "absolute", bottom: 40, left: 40, color: "#00D4FF", fontSize: 14, fontWeight: 900, letterSpacing: 2 }}>
+            <div
+              style={{
+                position: "absolute",
+                bottom: 40,
+                left: 40,
+                color: "#00D4FF",
+                fontSize: 14,
+                fontWeight: 900,
+                letterSpacing: 2,
+              }}
+            >
               SOC ANALYST DIRECT TELEMETRY STREAM
             </div>
           </AbsoluteFill>
         )}
 
+        {/* Cinematic Cutaway: Server Cluster with smooth cross-fade */}
         {showServerCutaway && (
-          <AbsoluteFill style={{ zIndex: 40 }}>
+          <AbsoluteFill style={{ zIndex: 40, opacity: serverOp }}>
             <Video
               src={staticFile("assets/footage/technology/act3_datacenter_servers.mp4")}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
               startFrom={5}
             />
             <div style={{ position: "absolute", inset: 0, background: "rgba(5, 5, 9, 0.4)" }} />
-            <div style={{ position: "absolute", bottom: 40, left: 40, color: "#00D4FF", fontSize: 14, fontWeight: 900, letterSpacing: 2 }}>
+            <div
+              style={{
+                position: "absolute",
+                bottom: 40,
+                left: 40,
+                color: "#00D4FF",
+                fontSize: 14,
+                fontWeight: 900,
+                letterSpacing: 2,
+              }}
+            >
               HIGH-THROUGHPUT BANKING INFERENCE CLUSTER
             </div>
           </AbsoluteFill>

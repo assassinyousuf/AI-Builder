@@ -12,19 +12,20 @@
 
 ---
 
-## 🎬 180-Second Hackathon Pitch Video
+## 🎬 180-Second Hackathon Pitch Video (V4 Master Finish)
 
-[![Download Master Video](https://img.shields.io/badge/Download-Master_Pitch_Video_(MP4)-success?style=for-the-badge&logo=github)](https://github.com/assassinyousuf/AI-Builder/releases/tag/v3.0.0)
+[![Download V4 Master Video](https://img.shields.io/badge/Download-V4_Master_Pitch_Video_(MP4)-success?style=for-the-badge&logo=github)](https://github.com/assassinyousuf/AI-Builder/releases/tag/v4.0.0)
 
-FraudShield includes an end-to-end, automated **Remotion video production suite** located in [`video/`](video/) rendering an authoritative, fast-paced 180.00-second documentary and live product demo pitch. Master video available in [Releases v3.0.0](https://github.com/assassinyousuf/AI-Builder/releases/tag/v3.0.0).
+FraudShield includes an end-to-end, automated **Remotion video production suite** located in [`video/`](video/) rendering an authoritative, fast-paced 180.00-second documentary and live product demo pitch with seamless transitions and continuous camera tracking. Master video available in [Releases v4.0.0](https://github.com/assassinyousuf/AI-Builder/releases/tag/v4.0.0).
 
 ![FraudShield Master Contact Sheet](video/final-contact-sheet.jpg)
 
 - **Production Suite & Source:** [`video/`](video/)
+- **V4 Quality Control & Transition Audit Report:** [`video/quality-control-v4.md`](video/quality-control-v4.md)
+- **Transition Continuity Contact Sheet:** [`video/transition-contact-sheet.jpg`](video/transition-contact-sheet.jpg)
 - **Master Storyboard:** [`video/storyboard.md`](video/storyboard.md)
 - **Time-Coded Voiceover Script:** [`video/final-voiceover-script.md`](video/final-voiceover-script.md)
-- **Production Audit & FFprobe Telemetry:** [`video/production-report.md`](video/production-report.md) | [`video/ffprobe-final.json`](video/ffprobe-final.json)
-- **Asset Manifest:** [`video/asset-manifest.md`](video/asset-manifest.md)
+- **FFprobe Telemetry Data:** [`video/ffprobe-v4.json`](video/ffprobe-v4.json)
 
 ---
 
